@@ -1,4 +1,4 @@
-module 下载器
+module mod更新器
 
 go 1.15
 
