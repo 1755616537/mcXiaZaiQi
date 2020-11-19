@@ -87,11 +87,13 @@ func main() {
 
 	task := make(map[string]string)
 	for i := 0; i < JsonBody.Len("data"); i++ {
-		Path:=fmt.Sprint(mods,"/",JsonBody.GetString(fmt.Sprint("data.",i,".Name")))
+		name:=JsonBody.GetString(fmt.Sprint("data.",i,".Name"))
+		Path:=fmt.Sprint(mods,"/",name)
 		if IsExist(Path) {
+			fmt.Println(name,"已存在")
 			continue
 		}
-		task[fmt.Sprint("https://www.gongjubaike.cn/gg/",JsonBody.GetString(fmt.Sprint("data.",i,".Url")))] = Path
+		task[fmt.Sprint("https://www.gongjubaike.cn/gg",JsonBody.GetString(fmt.Sprint("data.",i,".Url")))] = Path
 	}
 	for k, v := range task {
 		wg.Add(1)
