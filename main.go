@@ -55,6 +55,12 @@ var wg sync.WaitGroup
 func main() {
 	const mods = "./.minecraft/mods"
 
+	defer func() {
+		fmt.Println("程序结束,输入任意字符结束程序")
+		var data string
+		_, _ = fmt.Scanln(&data)
+	}()
+
 	if !IsExist(mods) {
 		fmt.Println("找不到【.minecraft/mods】目录")
 		return
@@ -93,13 +99,6 @@ func main() {
 		downloadFile(k, v)
 	}
 	wg.Wait()
-
-	{
-		fmt.Println("输入任意字符结束程序")
-		var data string
-		_, _ = fmt.Scanln(&data)
-	}
-
 }
 
 //文件/目录是否存在
