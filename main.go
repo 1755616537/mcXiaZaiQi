@@ -9,8 +9,11 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
 	"sync"
 )
+
+//go build
 
 type Downloader struct {
 	io.Reader
@@ -53,9 +56,25 @@ func downloadFile(url, filePath string) {
 var wg sync.WaitGroup
 
 func main() {
+	const start = "./开始游戏.exe"
 	const mods = "./.minecraft/mods"
 
+	var success bool = false
+
 	defer func() {
+		if success {
+			if !IsExist(mods) {
+				fmt.Println("找不到【开始游戏.exe】启动器")
+			}else{
+				cmd := exec.Command("cmd.exe", "/c", "start "+start)
+				err := cmd.Run()
+				if err == nil {
+					return
+				}
+				fmt.Println("自动运行启动器失败")
+			}
+		}
+
 		fmt.Println("程序结束,输入任意字符结束程序")
 		var data string
 		_, _ = fmt.Scanln(&data)
@@ -70,7 +89,7 @@ func main() {
 		"Content-Type": "application/json",
 		"Accept":       "application/json",
 		"User-Agent":   "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/14.0.835.163 Safari/535.1",
-		"GGM":          "gg1",
+		"GGM":          "gg",
 	}
 	resp,body:=HTTP("GET", "https://www.gongjubaike.cn/api/v1/mc/modsList", nil, headers)
 	//fmt.Println(resp,body)
@@ -101,6 +120,8 @@ func main() {
 		downloadFile(k, v)
 	}
 	wg.Wait()
+
+	success = true
 }
 
 //文件/目录是否存在
